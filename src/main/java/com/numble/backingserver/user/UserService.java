@@ -19,8 +19,7 @@ public class UserService {
 
     @Transactional
     public Optional<User> findByEmailAndPassword(String email, String password) {
-        Optional<User> user = userRepository.findByEmailAndPassword(email, password);
-        return user;
+        return userRepository.findByEmailAndPassword(email, password);
     }
 
     @Transactional
