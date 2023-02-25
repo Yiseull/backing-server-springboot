@@ -27,10 +27,15 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponse> login(@RequestBody Map<String, String> request) {
-        Optional<User> findUser = userService.findByEmailAndPassword(request.get("email"), request.get("password"));
-        if (findUser.isPresent()) {
-            UserLoginResponse user = null;
-            user.toDto(findUser.get());
+        Optional<User> selectedUser = userService.findByEmailAndPassword(request.get("email"), request.get("password"));
+        if (selectedUser.isPresent()) {
+            User findUser = selectedUser.get();
+            UserLoginResponse user = UserLoginResponse.builder()
+                    .userId(findUser.getUserId())
+                    .email(findUser.getEmail())
+                    .name(findUser.getName())
+                    .phoneNumber(findUser.getPhoneNumber())
+                    .build();
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
