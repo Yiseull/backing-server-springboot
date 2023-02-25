@@ -46,4 +46,13 @@ public class UserController {
         userService.deleteByUserId(userId);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
+
+    @PostMapping("/email-check")
+    public ResponseEntity<String> checkEmail(@RequestBody Map<String, String> request) {
+        Optional<User> selectedUser = userService.findByEmail(request.get("email"));
+        if (selectedUser.isPresent()) {
+            return new ResponseEntity<>("Exist", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Not exist", HttpStatus.OK);
+    }
 }
