@@ -29,16 +29,19 @@ public class UserController {
     public ResponseEntity<UserLoginResponse> login(@RequestBody Map<String, String> request) {
         Optional<User> selectedUser = userService.findByEmailAndPassword(request.get("email"), request.get("password"));
         if (selectedUser.isPresent()) {
-            User findUser = selectedUser.get();
-            UserLoginResponse user = UserLoginResponse.builder()
-                    .userId(findUser.getUserId())
-                    .email(findUser.getEmail())
-                    .name(findUser.getName())
-                    .phoneNumber(findUser.getPhoneNumber())
-                    .build();
+            UserLoginResponse user = createUserLoginResponse(selectedUser.get());
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    private UserLoginResponse createUserLoginResponse(User findUser) {
+        return UserLoginResponse.builder()
+                .userId(findUser.getUserId())
+                .email(findUser.getEmail())
+                .name(findUser.getName())
+                .phoneNumber(findUser.getPhoneNumber())
+                .build();
     }
 
     @DeleteMapping("/{userId}")
