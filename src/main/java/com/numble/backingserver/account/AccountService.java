@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class AccountService {
@@ -13,5 +15,10 @@ public class AccountService {
     @Transactional
     public Account save(Account account) {
         return accountRepository.save(account);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Account> findById(Integer id) {
+        return accountRepository.findById(id);
     }
 }

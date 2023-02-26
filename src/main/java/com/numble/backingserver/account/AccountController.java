@@ -1,5 +1,8 @@
 package com.numble.backingserver.account;
 
+import com.numble.backingserver.account.dto.AccountResponse;
+import com.numble.backingserver.user.User;
+import com.numble.backingserver.user.dto.UserLoginResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -7,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,5 +35,22 @@ public class AccountController {
         account.setPin(pin);
         account.setUserId(userId);
         return account;
+    }
+
+    @GetMapping("/{userId}/account/{accountId}")
+    public ResponseEntity<AccountResponse> getAccount(@PathVariable int accountId) {
+        Optional<Account> findAccount = accountService.findById(accountId);
+        if (findAccount.isPresent()) {
+            AccountResponse account = createAccountResponse(findAccount.get());
+            return new ResponseEntity<>(account, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    private AccountResponse createAccountResponse(Account findAccount) {
+        return AccountResponse.builder()
+                .accountNumber(findAccount.getAccountNumber())
+                .balance(findAccount.getBalance())
+                .build();
     }
 }
