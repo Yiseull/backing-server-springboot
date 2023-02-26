@@ -1,18 +1,14 @@
 package com.numble.backingserver.account;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@DynamicInsert
 @Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "account")
 public class Account {
@@ -21,13 +17,16 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
     private int accountId;
-    @Column(name = "account_number", nullable = false)
+    @Column(name = "account_number")
     private String accountNumber;
     @Column(nullable = false)
-    private int pin;
-    @Column(nullable = false)
+    private String pin;
     private int balance;
     @Column(name = "user_id", nullable = false)
     private int userId;
 
+    @PrePersist
+    public void prePersist() {
+        this.accountNumber = this.accountNumber == null ? "1606-11-" : this.accountNumber;
+    }
 }
