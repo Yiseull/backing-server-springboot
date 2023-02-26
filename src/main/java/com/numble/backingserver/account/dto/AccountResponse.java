@@ -9,6 +9,6 @@ import lombok.Getter;
 @Getter
 public class AccountResponse {
 
+    private int accountId;
     private String accountNumber;
-    private int balance;
 }

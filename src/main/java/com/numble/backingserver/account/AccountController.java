@@ -1,16 +1,16 @@
 package com.numble.backingserver.account;
 
 import com.numble.backingserver.account.dto.AccountResponse;
-import com.numble.backingserver.user.User;
-import com.numble.backingserver.user.dto.UserLoginResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,19 +38,28 @@ public class AccountController {
     }
 
     @GetMapping("/{userId}/account/{accountId}")
-    public ResponseEntity<AccountResponse> getAccount(@PathVariable int accountId) {
+    public ResponseEntity<Integer> getAccount(@PathVariable int accountId) {
         Optional<Account> findAccount = accountService.findById(accountId);
         if (findAccount.isPresent()) {
-            AccountResponse account = createAccountResponse(findAccount.get());
-            return new ResponseEntity<>(account, HttpStatus.OK);
+            Account account = findAccount.get();
+            return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/{userId}/account")
+    public ResponseEntity<List<AccountResponse>> getAccountList(@PathVariable int userId) {
+        List<AccountResponse> accountList = new ArrayList<>();
+        for (Account account : accountService.findByUserId(userId)) {
+            accountList.add(createAccountResponse(account));
+        }
+        return new ResponseEntity<>(accountList, HttpStatus.OK);
+    }
+
     private AccountResponse createAccountResponse(Account findAccount) {
         return AccountResponse.builder()
+                .accountId(findAccount.getAccountId())
                 .accountNumber(findAccount.getAccountNumber())
-                .balance(findAccount.getBalance())
                 .build();
     }
 }
