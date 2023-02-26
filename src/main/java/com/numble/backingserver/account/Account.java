@@ -22,7 +22,7 @@ public class Account {
     @Column(name = "account_id")
     private int accountId;
     @Column(name = "account_number", nullable = false)
-    private int accountNumber;
+    private String accountNumber;
     @Column(nullable = false)
     private int pin;
     @Column(nullable = false)
