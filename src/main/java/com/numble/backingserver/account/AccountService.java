@@ -32,4 +32,9 @@ public class AccountService {
     public Optional<Account> findByAccountNumber(String accountNumber) {
         return accountRepository.findByAccountNumber(accountNumber);
     }
+
+    @Transactional
+    public void deleteByAccountId(int accountId) {
+        accountRepository.deleteByAccountId(accountId);
+    }
 }

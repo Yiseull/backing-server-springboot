@@ -103,4 +103,10 @@ public class AccountController {
         return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{userId}/account/{accountId}")
+    public ResponseEntity<String> withdraw(@PathVariable int accountId) {
+        accountService.deleteByAccountId(accountId);
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
+
 }
