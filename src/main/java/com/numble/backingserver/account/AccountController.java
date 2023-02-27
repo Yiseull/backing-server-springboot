@@ -1,6 +1,7 @@
 package com.numble.backingserver.account;
 
 import com.numble.backingserver.account.dto.AccountResponse;
+import com.numble.backingserver.account.dto.TransferRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/{userId}/account")
-    public ResponseEntity<String> createAccount(@PathVariable int userId, @RequestBody Map<String, String> request) {
+    public ResponseEntity<String> openAccount(@PathVariable int userId, @RequestBody Map<String, String> request) {
         Account savedAccount = accountService.save(createAccountEntity(userId, request.get("pin")));
         String accountNumber = savedAccount.getAccountNumber() + Integer.toString(savedAccount.getAccountId());
         log.info("accountNumber={}", accountNumber);
@@ -61,5 +62,26 @@ public class AccountController {
                 .accountId(findAccount.getAccountId())
                 .accountNumber(findAccount.getAccountNumber())
                 .build();
+    }
+
+    @PostMapping("/{userId}/account/{accountId}")
+    public ResponseEntity<String> transfer(@PathVariable int accountId, @RequestBody TransferRequest request) {
+        Optional<Account> myAccount = accountService.findById(accountId);
+        Account sender = myAccount.get();
+        Account recipient = null;
+
+        Optional<Account> findAccount = accountService.findByAccountNumber(request.getAccountNumber());
+        if (findAccount.isPresent()) {
+            recipient = findAccount.get(); }
+        else {
+            return new ResponseEntity<>("Fail", HttpStatus.BAD_REQUEST);
+        }
+
+        int money = request.getMoney();
+        sender.setBalance(sender.getBalance() - money);
+        recipient.setBalance(recipient.getBalance() + money);
+        accountService.save(sender);
+        accountService.save(recipient);
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 }

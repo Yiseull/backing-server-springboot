@@ -27,4 +27,9 @@ public class AccountService {
     public List<Account> findByUserId(Integer userId) {
         return accountRepository.findByUserId(userId);
     }
+
+    @Transactional
+    public Optional<Account> findByAccountNumber(String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber);
+    }
 }
