@@ -1,7 +1,7 @@
 package com.numble.backingserver.user;
 
 import com.numble.backingserver.user.dto.UserJoinRequest;
-import com.numble.backingserver.user.dto.UserLoginResponse;
+import com.numble.backingserver.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,17 +26,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@RequestBody Map<String, String> request) {
+    public ResponseEntity<UserResponse> login(@RequestBody Map<String, String> request) {
         Optional<User> selectedUser = userService.findByEmailAndPassword(request.get("email"), request.get("password"));
         if (selectedUser.isPresent()) {
-            UserLoginResponse user = createUserLoginResponse(selectedUser.get());
+            UserResponse user = createUserLoginResponse(selectedUser.get());
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    private UserLoginResponse createUserLoginResponse(User findUser) {
-        return UserLoginResponse.builder()
+    private UserResponse createUserLoginResponse(User findUser) {
+        return UserResponse.builder()
                 .userId(findUser.getUserId())
                 .email(findUser.getEmail())
                 .name(findUser.getName())

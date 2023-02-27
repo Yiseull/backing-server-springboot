@@ -5,7 +5,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Getter
-public class UserLoginResponse {
+public class UserResponse {
 
     private int userId;
     private String email;
