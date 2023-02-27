@@ -1,21 +1,23 @@
 package com.numble.backingserver.friend;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "friend")
 public class Friend {
 
-    @EmbeddedId
-    private FriendId friendId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "friend_id")
+    private int friendId;
+    private int user1;
+    private int user2;
 
 }
