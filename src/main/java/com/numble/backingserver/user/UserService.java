@@ -31,4 +31,9 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    @Transactional(readOnly = true)
+    public User findByUserId(int userId) {
+        return userRepository.findByUserId(userId);
+    }
 }
