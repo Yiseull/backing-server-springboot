@@ -62,4 +62,15 @@ public class FriendController {
                 .phoneNumber(user.getPhoneNumber())
                 .build();
     }
+
+    @DeleteMapping("/{userId}/friend/{friendId}")
+    public ResponseEntity<String> deleteFriend(@PathVariable int userId, @PathVariable int friendId) {
+        if (userId < friendId) {
+            friendService.deleteByUser1AndUser2(userId, friendId);
+        } else {
+            friendService.deleteByUser1AndUser2(friendId, userId);
+        }
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
+
 }
