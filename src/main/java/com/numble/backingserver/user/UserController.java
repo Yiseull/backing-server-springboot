@@ -51,11 +51,12 @@ public class UserController {
     }
 
     @PostMapping("/email-check")
-    public ResponseEntity<String> checkEmail(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Integer> checkEmail(@RequestBody Map<String, String> request) {
         Optional<User> selectedUser = userService.findByEmail(request.get("email"));
         if (selectedUser.isPresent()) {
-            return new ResponseEntity<>("Exist", HttpStatus.OK);
+            User user = selectedUser.get();
+            return new ResponseEntity<>(user.getUserId(), HttpStatus.OK);
         }
-        return new ResponseEntity<>("Not exist", HttpStatus.OK);
+        return new ResponseEntity<>(-1, HttpStatus.OK);
     }
 }
