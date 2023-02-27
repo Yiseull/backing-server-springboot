@@ -20,4 +20,8 @@ public class Friend {
     private int user1;
     private int user2;
 
+    public Friend(int user1, int user2) {
+        this.user1 = user1;
+        this.user2 = user2;
+    }
 }

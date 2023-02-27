@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+
 @RequiredArgsConstructor
 @Service
 public class FriendService {
@@ -11,7 +13,12 @@ public class FriendService {
     private final FriendRepository friendRepository;
 
     @Transactional
-    Friend save(Friend friend) {
+    public Friend save(Friend friend) {
         return friendRepository.save(friend);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Friend> findByUser1OrUser2(int user1, int user2) {
+        return friendRepository.findByUser1OrUser2(user1, user2);
     }
 }
