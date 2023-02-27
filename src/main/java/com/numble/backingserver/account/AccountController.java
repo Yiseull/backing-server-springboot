@@ -84,4 +84,23 @@ public class AccountController {
         accountService.save(recipient);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
+
+    @PostMapping("/{userId}/account/{accountId}/deposit")
+    public ResponseEntity<Integer> deposit(@PathVariable int accountId, @RequestBody Map<String, Integer> request) {
+        Optional<Account> myAccount = accountService.findById(accountId);
+        Account account = myAccount.get();
+        account.setBalance(account.getBalance() + request.get("money"));
+        accountService.save(account);
+        return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
+    }
+
+    @PostMapping("/{userId}/account/{accountId}/withdraw")
+    public ResponseEntity<Integer> withdraw(@PathVariable int accountId, @RequestBody Map<String, Integer> request) {
+        Optional<Account> myAccount = accountService.findById(accountId);
+        Account account = myAccount.get();
+        account.setBalance(account.getBalance() - request.get("money"));
+        accountService.save(account);
+        return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
+    }
+
 }
