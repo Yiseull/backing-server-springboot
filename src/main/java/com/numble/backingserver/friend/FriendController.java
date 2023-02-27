@@ -23,11 +23,15 @@ public class FriendController {
 
     @PostMapping("/{userId}/friend/{friendId}")
     public ResponseEntity<String> addFriend(@PathVariable int userId, @PathVariable int friendId) {
-        if (userId > friendId) {
-            friendService.save(new Friend(userId, friendId));
+        Friend friend = new Friend();
+        if (userId < friendId) {
+            friend.setUser1(userId);
+            friend.setUser2(friendId);
         } else {
-            friendService.save(new Friend(friendId, userId));
+            friend.setUser1(friendId);
+            friend.setUser2(userId);
         }
+        friendService.save(friend);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
