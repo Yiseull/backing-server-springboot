@@ -1,5 +1,6 @@
 package com.numble.backingserver.user;
 
+import com.numble.backingserver.friend.FriendService;
 import com.numble.backingserver.user.dto.UserJoinRequest;
 import com.numble.backingserver.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final FriendService friendService;
 
     @PostMapping
     public ResponseEntity<String> join(@RequestBody UserJoinRequest request) {
@@ -47,6 +49,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable int userId) {
         userService.deleteByUserId(userId);
+        friendService.deleteByUser1OrUser2(userId, userId);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 

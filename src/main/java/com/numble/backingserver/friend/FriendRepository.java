@@ -13,4 +13,6 @@ public interface FriendRepository extends JpaRepository<Friend, Integer> {
     List<Friend> findByUser1OrUser2(int user1, int user2);
 
     void deleteByUser1AndUser2(int user1, int user2);
+
+    void deleteByUser1OrUser2(int user1, int user2);
 }
