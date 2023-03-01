@@ -25,6 +25,10 @@ public class AccountController {
 
     @PostMapping("/{userId}/account")
     public ResponseEntity<String> openAccount(@PathVariable int userId, @RequestBody Map<String, String> request) {
+        List<Account> accountList = accountService.findByUserId(userId);
+        if (accountList.size() > 2) {
+            return new ResponseEntity<>("Exceed", HttpStatus.BAD_REQUEST);
+        }
         Account savedAccount = accountService.save(createAccountEntity(userId, request.get("pin")));
         String accountNumber = savedAccount.getAccountNumber() + Integer.toString(savedAccount.getAccountId());
         log.info("accountNumber={}", accountNumber);
