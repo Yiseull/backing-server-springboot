@@ -1,5 +1,6 @@
 package com.numble.backingserver.account;
 
+import com.numble.backingserver.NumbleAlarmService;
 import com.numble.backingserver.account.dto.AccountResponse;
 import com.numble.backingserver.account.dto.TransferRequest;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
+    private final NumbleAlarmService numbleAlarmService;
 
     @PostMapping("/{userId}/account")
     public ResponseEntity<String> openAccount(@PathVariable int userId, @RequestBody Map<String, String> request) {
@@ -82,6 +84,7 @@ public class AccountController {
         recipient.setBalance(recipient.getBalance() + money);
         accountService.save(sender);
         accountService.save(recipient);
+        numbleAlarmService.notify(recipient.getAccountId(), "이체 완료");
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
