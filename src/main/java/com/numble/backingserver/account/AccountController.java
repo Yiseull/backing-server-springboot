@@ -84,7 +84,9 @@ public class AccountController {
         recipient.setBalance(recipient.getBalance() + money);
         accountService.save(sender);
         accountService.save(recipient);
+
         numbleAlarmService.notify(recipient.getAccountId(), "이체 완료");
+
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
