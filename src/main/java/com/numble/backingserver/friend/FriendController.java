@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -49,7 +50,9 @@ public class FriendController {
             if (friendId == userId) {
                 friendId = friend.getUser2();
             }
-            list.add(createUserResponse(userService.findByUserId(friendId)));
+            Optional<User> user = userService.findById(friendId);
+            list.add(createUserResponse(user.orElseThrow(() -> new RuntimeException())));
+
         }
         return list;
     }
