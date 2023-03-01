@@ -30,7 +30,7 @@ public class AccountController {
             return new ResponseEntity<>("Exceed", HttpStatus.BAD_REQUEST);
         }
         Account savedAccount = accountService.save(createAccountEntity(userId, request.get("pin")));
-        String accountNumber = savedAccount.getAccountNumber() + Integer.toString(savedAccount.getAccountId());
+        String accountNumber = savedAccount.getAccountNumber() + savedAccount.getAccountId();
         log.info("accountNumber={}", accountNumber);
         savedAccount.setAccountNumber(accountNumber);
         accountService.save(savedAccount);
@@ -74,7 +74,7 @@ public class AccountController {
     public ResponseEntity<String> transfer(@PathVariable int accountId, @RequestBody TransferRequest request) {
         Optional<Account> myAccount = accountService.findById(accountId);
         Account sender = myAccount.get();
-        Account recipient = null;
+        Account recipient;
 
         Optional<Account> findAccount = accountService.findByAccountNumber(request.getAccountNumber());
         if (findAccount.isPresent()) {
