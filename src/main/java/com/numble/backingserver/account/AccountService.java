@@ -19,8 +19,8 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Account> findById(Integer id) {
-        return accountRepository.findById(id);
+    public Account findByAccountId(int accountId) {
+        return accountRepository.findByAccountId(accountId);
     }
 
     @Transactional(readOnly = true)

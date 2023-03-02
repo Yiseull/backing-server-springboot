@@ -11,8 +11,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Account save(Account account);
 
-    @Override
-    Optional<Account> findById(Integer id);
+    Account findByAccountId(int accountId);
 
     List<Account> findByUserId(Integer userId);
 
