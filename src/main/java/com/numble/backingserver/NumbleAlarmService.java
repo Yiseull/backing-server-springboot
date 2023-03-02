@@ -1,5 +1,8 @@
 package com.numble.backingserver;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class NumbleAlarmService {
 
     public void notify(int accountId, String message) {
