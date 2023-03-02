@@ -1,5 +1,7 @@
 package com.numble.backingserver.friend;
 
+import com.numble.backingserver.exception.CustomException;
+import com.numble.backingserver.exception.ErrorCode;
 import com.numble.backingserver.user.User;
 import com.numble.backingserver.user.UserService;
 import com.numble.backingserver.user.dto.UserResponse;
@@ -51,8 +53,7 @@ public class FriendController {
                 friendId = friend.getUser2();
             }
             Optional<User> user = userService.findById(friendId);
-            list.add(createUserResponse(user.orElseThrow(() -> new RuntimeException())));
-
+            list.add(createUserResponse(user.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))));
         }
         return list;
     }

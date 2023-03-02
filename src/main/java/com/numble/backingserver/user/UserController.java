@@ -1,5 +1,7 @@
 package com.numble.backingserver.user;
 
+import com.numble.backingserver.exception.CustomException;
+import com.numble.backingserver.exception.ErrorCode;
 import com.numble.backingserver.friend.FriendService;
 import com.numble.backingserver.user.dto.UserJoinRequest;
 import com.numble.backingserver.user.dto.UserResponse;
@@ -30,11 +32,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody Map<String, String> request) {
         Optional<User> selectedUser = userService.findByEmailAndPassword(request.get("email"), request.get("password"));
-        if (selectedUser.isPresent()) {
-            UserResponse user = createUserLoginResponse(selectedUser.get());
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        UserResponse user = createUserLoginResponse(selectedUser.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     private UserResponse createUserLoginResponse(User findUser) {

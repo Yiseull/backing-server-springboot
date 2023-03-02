@@ -3,6 +3,8 @@ package com.numble.backingserver.account;
 import com.numble.backingserver.NumbleAlarmService;
 import com.numble.backingserver.account.dto.AccountResponse;
 import com.numble.backingserver.account.dto.TransferRequest;
+import com.numble.backingserver.exception.CustomException;
+import com.numble.backingserver.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,11 +29,10 @@ public class AccountController {
     public ResponseEntity<String> openAccount(@PathVariable int userId, @RequestBody Map<String, String> request) {
         List<Account> accountList = accountService.findByUserId(userId);
         if (accountList.size() > 2) {
-            return new ResponseEntity<>("Exceed", HttpStatus.BAD_REQUEST);
+            throw new CustomException(ErrorCode.EXCEED_ACCOUNT_SIZE);
         }
         Account savedAccount = accountService.save(createAccountEntity(userId, request.get("pin")));
         String accountNumber = savedAccount.getAccountNumber() + savedAccount.getAccountId();
-        log.info("accountNumber={}", accountNumber);
         savedAccount.setAccountNumber(accountNumber);
         accountService.save(savedAccount);
         return new ResponseEntity<>("Success", HttpStatus.OK);
@@ -46,12 +47,8 @@ public class AccountController {
 
     @GetMapping("/{userId}/account/{accountId}")
     public ResponseEntity<Integer> getAccount(@PathVariable int accountId) {
-        Optional<Account> findAccount = accountService.findById(accountId);
-        if (findAccount.isPresent()) {
-            Account account = findAccount.get();
-            return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Account account = accountService.findByAccountId(accountId);
+        return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/account")
@@ -72,8 +69,7 @@ public class AccountController {
 
     @PostMapping("/{userId}/account/{accountId}")
     public ResponseEntity<String> transfer(@PathVariable int accountId, @RequestBody TransferRequest request) {
-        Optional<Account> myAccount = accountService.findById(accountId);
-        Account sender = myAccount.get();
+        Account sender = accountService.findByAccountId(accountId);
         Account recipient;
 
         Optional<Account> findAccount = accountService.findByAccountNumber(request.getAccountNumber());
@@ -96,8 +92,7 @@ public class AccountController {
 
     @PostMapping("/{userId}/account/{accountId}/deposit")
     public ResponseEntity<Integer> deposit(@PathVariable int accountId, @RequestBody Map<String, Integer> request) {
-        Optional<Account> myAccount = accountService.findById(accountId);
-        Account account = myAccount.get();
+        Account account = accountService.findByAccountId(accountId);
         account.setBalance(account.getBalance() + request.get("money"));
         accountService.save(account);
         return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
@@ -105,15 +100,14 @@ public class AccountController {
 
     @PostMapping("/{userId}/account/{accountId}/withdraw")
     public ResponseEntity<Integer> withdraw(@PathVariable int accountId, @RequestBody Map<String, Integer> request) {
-        Optional<Account> myAccount = accountService.findById(accountId);
-        Account account = myAccount.get();
+        Account account = accountService.findByAccountId(accountId);
         account.setBalance(account.getBalance() - request.get("money"));
         accountService.save(account);
         return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}/account/{accountId}")
-    public ResponseEntity<String> withdraw(@PathVariable int accountId) {
+    public ResponseEntity<String> deleteAccount(@PathVariable int accountId) {
         accountService.deleteByAccountId(accountId);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
