@@ -70,14 +70,8 @@ public class AccountController {
     @PostMapping("/{userId}/account/{accountId}")
     public ResponseEntity<String> transfer(@PathVariable int accountId, @RequestBody TransferRequest request) {
         Account sender = accountService.findByAccountId(accountId);
-        Account recipient;
-
-        Optional<Account> findAccount = accountService.findByAccountNumber(request.getAccountNumber());
-        if (findAccount.isPresent()) {
-            recipient = findAccount.get(); }
-        else {
-            return new ResponseEntity<>("Fail", HttpStatus.BAD_REQUEST);
-        }
+        Account recipient = accountService.findByAccountNumber(
+                request.getAccountNumber()).orElseThrow(() -> new CustomException(ErrorCode.ACCOUNT_NOT_FOUND));
 
         int money = request.getMoney();
         sender.setBalance(sender.getBalance() - money);
